@@ -11,7 +11,8 @@ class DataPoint(db.Model):
     feature2 = db.Column(db.Float, nullable=False)
     category = db.Column(db.Integer, nullable=False)
 
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
@@ -41,3 +42,34 @@ def delete_data_point(record_id):
     db.session.delete(data_point)
     db.session.commit()
     return redirect(url_for('index'))
+
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    data_points = DataPoint.query.all()
+    return jsonify([{'id': dp.id,
+                     'feature1': dp.feature1,
+                     'feature2': dp.feature2,
+                     'category': dp.category} for dp in data_points])
+
+@app.route('/api/data', methods=['POST'])
+def api_add_data_point():
+    data = request.get_json()
+    try:
+        dp = DataPoint(feature1=data['feature1'], feature2=data['feature2'], category=data['category'])
+        db.session.add(dp)
+        db.session.commit()
+        return jsonify({'id': dp.id,}), 201
+    except (ValueError, KeyError):
+        return jsonify({'error': 'Invalid data'}), 400
+
+@app.route('/api/data/<int:record_id>', methods=['DELETE'])
+def api_delete_data_point(record_id):
+    data_point = DataPoint.query.get(record_id)
+    if data_point is None:
+        return jsonify({'error': 'Record not found'}), 404
+    db.session.delete(data_point)
+    db.session.commit()
+    return '', 204
+
+if __name__ == '__main__':
+    app.run(debug=True)

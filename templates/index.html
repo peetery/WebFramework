@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Points</title>
+</head>
+<body>
+    <h1>Data Points</h1>
+    <table border="1">
+        <tr>
+            <th>Seq</th>
+            <th>Feature 1</th>
+            <th>Feature 2</th>
+            <th>Category</th>
+            <th>Action</th>
+        </tr>
+        {% for data in data_points %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ data.feature1 }}</td>
+            <td>{{ data.feature2 }}</td>
+            <td>{{ data.category }}</td>
+            <td>
+                <form action="{{ url_for('delete_data_point', record_id=data.id) }}" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('add_data_point') }}">Add Data Point</a>
+</body>
+</html>
