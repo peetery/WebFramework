@@ -1,22 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Data Point</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Add Data Point</h1>
-    <form method="post">
-        <label>Feature 1:</label>
-        <input type="text" name="feature1" required>
-        <br>
-        <label>Feature 2:</label>
-        <input type="text" name="feature2" required>
-        <br>
-        <label>Category:</label>
-        <input type="text" name="category" required>
-        <br>
-        <button type="submit">Submit</button>
+    <h1>Add New Data Point</h1>
+    <form action="/add" method="POST">
+        <label for="feature1">Feature 1:</label>
+        <input type="number" id="feature1" name="feature1" step="0.01" required>
+
+        <label for="feature2">Feature 2:</label>
+        <input type="number" id="feature2" name="feature2" step="0.01" required>
+
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" required>
+
+        <button type="submit">Add Data Point</button>
     </form>
-    <a href="{{ url_for('index') }}">Back to Home</a>
+    <a href="/">Go back to Home</a>
 </body>
 </html>

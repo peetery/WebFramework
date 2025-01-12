@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Data Points</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .add-link {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Points</h1>
+    <a href="/add" class="add-link">Add New Data Point</a>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Feature 1</th>
+                <th>Feature 2</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in data_points %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ data.feature1 }}</td>
+                <td>{{ data.feature2 }}</td>
+                <td>{{ data.category }}</td>
+                <td>
+                    <form action="/delete/{{ data.id }}" method="POST" style="display:inline;">
+                        <button type="submit" style="color: red; border: none; background: none; cursor: pointer;">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
