@@ -1,9 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import Mapped, mapped_column
 
 db = SQLAlchemy()
 
 class DataPoint(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    feature1 = db.Column(db.Float, nullable=False)
-    feature2 = db.Column(db.Float, nullable=False)
-    category = db.Column(db.Integer, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    feature1: Mapped[float] = mapped_column(nullable=False)
+    feature2: Mapped[float] = mapped_column(nullable=False)
+    category: Mapped[int] = mapped_column(nullable=False)
