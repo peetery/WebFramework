@@ -9,7 +9,7 @@ db.init_app(app)
 @app.route('/')
 def home():
     with db.session.begin():
-        data_points = db.session.query(DataPoint).all()
+        data_points = db.session.scalars(db.select(DataPoint)).all()
     return render_template('home.html', data_points=data_points)
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def add():
 @app.route('/delete/<int:record_id>', methods=['POST'])
 def delete(record_id):
     with db.session.begin():
-        data_point = db.session.query(DataPoint).get(record_id)
+        data_point = db.session.scalars(db.select(DataPoint).where(DataPoint.id == record_id)).first()
         if not data_point:
             return render_template('error.html',
                                    error_code=404,
@@ -51,7 +51,7 @@ def delete(record_id):
 @app.route('/api/data', methods=['GET'])
 def api_get_data():
     with db.session.begin():
-        data_points = db.session.query(DataPoint).all()
+        data_points = db.session.scalars(db.select(DataPoint)).all()
     return jsonify([{
         'id': dp.id,
         'feature1': dp.feature1,
@@ -78,7 +78,7 @@ def api_add_data():
 @app.route('/api/data/<int:record_id>', methods=['DELETE'])
 def api_delete_data(record_id):
     with db.session.begin():
-        data_point = db.session.query(DataPoint).get(record_id)
+        data_point = db.session.scalars(db.select(DataPoint).where(DataPoint.id == record_id)).first()
         if not data_point:
             return jsonify({'error': 'Record not found'}), 404
         db.session.delete(data_point)
