@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from models import db, DataPoint
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data_points.db'
 db.init_app(app)
 
 @app.route('/')
@@ -28,30 +27,27 @@ def add():
                                    error_code=400,
                                    error_message="Invalid data. Please check your input and try again."), 400
 
-        with db.session.begin():
-            new_point = DataPoint(feature1=feature1, feature2=feature2, category=category)
-            db.session.add(new_point)
-
+        new_point = DataPoint(feature1=feature1, feature2=feature2, category=category)
+        db.session.add(new_point)
+        db.session.commit()
         return redirect(url_for('home'))
     else:
         return render_template('add.html')
 
 @app.route('/delete/<int:record_id>', methods=['POST'])
 def delete(record_id):
-    with db.session.begin():
-        data_point = db.session.scalars(db.select(DataPoint).where(DataPoint.id == record_id)).first()
-        if not data_point:
-            return render_template('error.html',
-                                   error_code=404,
-                                   error_message="Record not found. Unable to delete."), 404
-        db.session.delete(data_point)
-
+    data_point = db.session.scalar(db.select(DataPoint).where(DataPoint.id == record_id))
+    if not data_point:
+        return render_template('error.html',
+                                error_code=404,
+                                error_message="Record not found. Unable to delete."), 404
+    db.session.delete(data_point)
+    db.session.commit()
     return redirect(url_for('home'))
 
 @app.route('/api/data', methods=['GET'])
 def api_get_data():
-    with db.session.begin():
-        data_points = db.session.scalars(db.select(DataPoint)).all()
+    data_points = db.session.scalars(db.select(DataPoint)).all()
     return jsonify([{
         'id': dp.id,
         'feature1': dp.feature1,
@@ -69,18 +65,16 @@ def api_add_data():
     except (ValueError, KeyError):
         return jsonify({'error': 'Invalid data in API request.'}), 400
 
-    with db.session.begin():
-        new_point = DataPoint(feature1=feature1, feature2=feature2, category=category)
-        db.session.add(new_point)
-
+    new_point = DataPoint(feature1=feature1, feature2=feature2, category=category)
+    db.session.add(new_point)
+    db.session.commit()
     return jsonify({'id': new_point.id}), 201
 
 @app.route('/api/data/<int:record_id>', methods=['DELETE'])
 def api_delete_data(record_id):
-    with db.session.begin():
-        data_point = db.session.scalars(db.select(DataPoint).where(DataPoint.id == record_id)).first()
-        if not data_point:
-            return jsonify({'error': 'Record not found'}), 404
-        db.session.delete(data_point)
-
+    data_point = db.session.scalar(db.select(DataPoint).where(DataPoint.id == record_id))
+    if not data_point:
+        return jsonify({'error': 'Record not found'}), 404
+    db.session.delete(data_point)
+    db.session.commit()
     return jsonify({'id': record_id})
