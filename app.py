@@ -7,8 +7,7 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    with db.session.begin():
-        data_points = db.session.scalars(db.select(DataPoint)).all()
+    data_points = db.session.scalars(db.select(DataPoint))
     return render_template('home.html', data_points=data_points)
 
 @app.route('/add', methods=['GET', 'POST'])
