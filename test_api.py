@@ -4,12 +4,13 @@ import threading
 from app import app, db
 
 BASE_URL = "http://127.0.0.1:5000"
+TEST_DATABASE_URI = 'sqlite:///:memory:'
 
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_server():
     app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    app.config['SQLALCHEMY_DATABASE_URI'] = TEST_DATABASE_URI
 
     with app.app_context():
         db.create_all()
