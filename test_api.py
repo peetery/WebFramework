@@ -13,6 +13,7 @@ def setup_server():
     app.config['SQLALCHEMY_DATABASE_URI'] = TEST_DATABASE_URI
 
     with app.app_context():
+        db.drop_all()
         db.create_all()
 
     server = threading.Thread(target=app.run, kwargs={"port": 5000, "use_reloader": False}, daemon=True)

@@ -53,7 +53,7 @@
         <tbody>
             {% for data in data_points %}
             <tr>
-                <td>{{ data.id }}</td>
+                <td>{{ loop.index }}</td>
                 <td>{{ data.feature1 }}</td>
                 <td>{{ data.feature2 }}</td>
                 <td>{{ data.category }}</td>
